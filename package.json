@@ -12,7 +12,9 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@quasar/extras": "^1.15.11",
     "pinia": "^2.0.32",
+    "quasar": "^2.11.6",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
