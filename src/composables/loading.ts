@@ -1,17 +1,9 @@
 import { useQuasar } from "quasar"
-import type { QVueGlobals } from "quasar"
 
-let $q: QVueGlobals
+export default function useLoading() {
+  const $q = useQuasar()
+  const showLoading = () => $q.loading.show()
+  const hideLoading = () => $q.loading.hide()
 
-export function useShowLoading() {
-  if (!$q) {
-    $q = useQuasar()
-  }
-  $q.loading.show()
-}
-
-export function useHideLoading() {
-  if ($q) {
-    $q.loading.hide()
-  }
+  return { showLoading, hideLoading }
 }

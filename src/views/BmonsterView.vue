@@ -2,12 +2,32 @@
 import { ref, computed, watch, toValue } from "vue"
 import type { QTableProps } from "quasar"
 import type { Performer, Schedule } from "@/interfaces/bmonster"
-import { useShowLoading, useHideLoading } from "@/composables/loading"
+import useLoading from "@/composables/loading"
 import { useFetch } from "@/composables/fetch"
 import { useDayOfWeek } from "@/composables/date"
 
+const { showLoading, hideLoading } = useLoading()
+showLoading()
+
 const performers = await useFetch<Performer[]>("/api/bmonster/performers/")
 const selectedPerformers = ref<Performer[] | null>([])
+
+const KEY = "selected-performer-ids"
+const SEPARATOR = "."
+const ids = computed(() => {
+  return selectedPerformers.value?.map((performer) => performer.id.toString()) ?? []
+})
+watch(ids, () => {
+  if (ids.value.length === 0) {
+    localStorage.removeItem(KEY)
+  } else {
+    localStorage.setItem(KEY, ids.value.join(SEPARATOR))
+  }
+})
+selectedPerformers.value = performers.value.filter((performer) => {
+  const storedIds = localStorage.getItem(KEY)?.split(SEPARATOR) ?? []
+  return storedIds.includes(performer.id.toString())
+})
 
 const schedules = await fetchSchedules()
 async function fetchSchedules() {
@@ -30,28 +50,11 @@ async function fetchSchedules() {
   return ref(newSchedules)
 }
 async function updateSchedules() {
-  useShowLoading()
+  showLoading()
   const schedulesRef = await fetchSchedules()
   schedules.value = toValue(schedulesRef)
-  useHideLoading()
+  hideLoading()
 }
-
-// const KEY = "selected-performer-ids"
-// const SEPARATOR = "."
-// const ids = computed(() => {
-//   return selectedPerformers.value?.map((performer) => performer.id.toString()) ?? []
-// })
-// watch(ids, () => {
-//   if (ids.value.length === 0) {
-//     localStorage.removeItem(KEY)
-//   } else {
-//     localStorage.setItem(KEY, ids.value.join(SEPARATOR))
-//   }
-// })
-// selectedPerformers.value = performers.value.filter((performer) => {
-//   const storedIds = localStorage.getItem(KEY)?.split(SEPARATOR) ?? []
-//   return storedIds.includes(performer.id.toString())
-// })
 
 const tableProps: QTableProps = {
   columns: [
@@ -83,6 +86,8 @@ function openUrl(evt: Event, row: Schedule) {
     window.open(row.url, "_blank")
   }
 }
+
+hideLoading()
 </script>
 
 <template>
