@@ -24,10 +24,7 @@ const app = createApp(App)
 app.use(createPinia())
 app.use(router)
 app.use(Quasar, {
-  plugins: {Loading},
-  config: {
-    loading: {}
-  },
+  plugins: { Loading },
   lang: quasarLang,
 })
 
@@ -37,6 +34,5 @@ app.config.errorHandler = (err) => {
 }
 // グローバルコンポーネントの登録
 // app.component('TodoDeleteButton', TodoDeleteButton)
-
 
 app.mount("#app")
