@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
+import IndexView from "@/views/IndexView.vue"
 import BmonsterView from "@/views/BmonsterView.vue"
 
 const router = createRouter({
@@ -6,6 +7,11 @@ const router = createRouter({
   routes: [
     {
       path: "/",
+      name: "index",
+      component: IndexView
+    },
+    {
+      path: "/bmonster",
       name: "bmonster",
       component: BmonsterView
     }

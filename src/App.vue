@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue"
+// import { ref } from "vue"
 
-const rightDrawerOpen = ref(false)
-function toggleRightDrawer() {
-  rightDrawerOpen.value = !rightDrawerOpen.value
-}
+// const rightDrawerOpen = ref(false)
+// function toggleRightDrawer() {
+//   rightDrawerOpen.value = !rightDrawerOpen.value
+// }
 </script>
 
 <template>
@@ -12,7 +12,7 @@ function toggleRightDrawer() {
     <q-header reveal elevated class="bg-primary text-white">
       <q-toolbar>
         <q-toolbar-title>
-          Top
+          <!-- Title -->
         </q-toolbar-title>
 
         <!-- <q-btn dense flat round icon="menu" @click="toggleRightDrawer" /> -->
