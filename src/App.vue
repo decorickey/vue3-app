@@ -23,7 +23,7 @@
       <!-- drawer content -->
     <!-- </q-drawer> -->
 
-    <q-page-container>
+    <q-page-container class="q-ma-md">
       <suspense>
         <router-view />
       </suspense>

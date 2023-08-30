@@ -91,8 +91,8 @@ hideLoading()
 </script>
 
 <template>
-  <div class="row justify-center q-pa-sm">
-    <div class="col-12 col-md-6 q-pa-sm">
+  <div class="row justify-center q-col-gutter-md">
+    <div class="col-12 col-md-6">
       <q-select
         v-model="selectedPerformers"
         clearable
@@ -105,7 +105,7 @@ hideLoading()
       />
     </div>
 
-    <div class="col-12 col-md-6 q-pa-sm">
+    <div class="col-12 col-md-6">
       <q-table
         :rows="schedules"
         row-key="index"
