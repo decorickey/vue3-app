@@ -1,32 +1,22 @@
 <script setup lang="ts">
-import { ref, computed, watch, toValue } from "vue"
+import { ref, watch, toValue } from "vue"
 import type { QTableProps } from "quasar"
 import type { Performer, Schedule } from "@/interfaces/bmonster"
 import useLoading from "@/composables/loading"
 import { useFetch } from "@/composables/fetch"
 import { useDayOfWeek } from "@/composables/date"
+import { useLocalStorage } from "@vueuse/core"
 
 const { showLoading, hideLoading } = useLoading()
 showLoading()
 
+const selectedIds = useLocalStorage<number[]>("performer-ids", [])
 const performers = await useFetch<Performer[]>("/api/bmonster/performers/")
-const selectedPerformers = ref<Performer[] | null>([])
-
-const KEY = "selected-performer-ids"
-const SEPARATOR = "."
-const ids = computed(() => {
-  return selectedPerformers.value?.map((performer) => performer.id.toString()) ?? []
-})
-watch(ids, () => {
-  if (ids.value.length === 0) {
-    localStorage.removeItem(KEY)
-  } else {
-    localStorage.setItem(KEY, ids.value.join(SEPARATOR))
-  }
-})
-selectedPerformers.value = performers.value.filter((performer) => {
-  const storedIds = localStorage.getItem(KEY)?.split(SEPARATOR) ?? []
-  return storedIds.includes(performer.id.toString())
+const selectedPerformers = ref<Performer[] | null>(
+  performers.value.filter((performer) => selectedIds.value.includes(performer.id))
+)
+watch(selectedPerformers, () => {
+  selectedIds.value = selectedPerformers.value.map((performer) => performer.id)
 })
 
 const schedules = await fetchSchedules()
