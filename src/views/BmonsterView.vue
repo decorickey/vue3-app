@@ -1,26 +1,21 @@
 <script setup lang="ts">
-import { ref, watch, toValue } from "vue"
+import { ref, toValue } from "vue"
+import type { Ref } from "vue"
 import type { QTableProps } from "quasar"
 import type { Performer, Schedule } from "@/interfaces/bmonster"
 import useLoading from "@/composables/loading"
-import { useFetch } from "@/composables/fetch"
+import useFetch from "@/composables/fetch"
 import { useDayOfWeek } from "@/composables/date"
 import { useLocalStorage } from "@vueuse/core"
 
 const { showLoading, hideLoading } = useLoading()
 showLoading()
 
-const selectedIds = useLocalStorage<number[]>("performer-ids", [])
 const performers = await useFetch<Performer[]>("/api/bmonster/performers/")
-const selectedPerformers = ref<Performer[] | null>(
-  performers.value.filter((performer) => selectedIds.value.includes(performer.id))
-)
-watch(selectedPerformers, () => {
-  selectedIds.value = selectedPerformers.value.map((performer) => performer.id)
-})
+const selectedPerformers = useLocalStorage<Performer[] | null>("selected-performers", null)
 
-const schedules = await fetchSchedules()
-async function fetchSchedules() {
+let schedules = await fetchSchedules()
+async function fetchSchedules(): Promise<Ref<Schedule[]>> {
   if (selectedPerformers.value == null) {
     return ref([])
   }
@@ -41,8 +36,7 @@ async function fetchSchedules() {
 }
 async function updateSchedules() {
   showLoading()
-  const schedulesRef = await fetchSchedules()
-  schedules.value = toValue(schedulesRef)
+  schedules = await fetchSchedules()
   hideLoading()
 }
 

@@ -1,11 +1,16 @@
-import { ref } from "vue"
+import { useFetch } from "@vueuse/core"
 
-export async function useFetch<T>(path: string) {
-  let req = new Request(path)
+export default async function <T>(path: string) {
+  let request: Request 
   if (import.meta.env.DEV) {
-    req = new Request(new URL(path, import.meta.env.VITE_API_BASE_URL))
+    request = new Request(new URL(path, import.meta.env.VITE_API_BASE_URL))
+  } else {
+    request = new Request(path)
   }
-  const res = await fetch(req)
-  const data = await res.json()
-  return ref(data as T)
+
+  const { data, error } = await useFetch<T>(request.url)
+  if (error) {
+    throw error
+  }
+  return data
 }
