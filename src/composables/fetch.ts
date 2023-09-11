@@ -8,9 +8,6 @@ export default async function <T>(path: string) {
     request = new Request(path)
   }
 
-  const { data, error } = await useFetch<T>(request.url)
-  if (error) {
-    throw error
-  }
+  const { data } = await useFetch(request.url).get().json<T>()
   return data
 }

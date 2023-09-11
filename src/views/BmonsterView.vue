@@ -12,9 +12,14 @@ const { showLoading, hideLoading } = useLoading()
 showLoading()
 
 const performers = await useFetch<Performer[]>("/api/bmonster/performers/")
-const selectedPerformers = useLocalStorage<Performer[] | null>("selected-performers", null)
+const selectedPerformers = useLocalStorage<Performer[] | null>("selected-performers", null, {
+  serializer: {
+    read: (v) => (v ? JSON.parse(v) : null),
+    write: (v) => JSON.stringify(v),
+  },
+})
 
-let schedules = await fetchSchedules()
+const schedules = await fetchSchedules()
 async function fetchSchedules(): Promise<Ref<Schedule[]>> {
   if (selectedPerformers.value == null) {
     return ref([])
@@ -36,7 +41,7 @@ async function fetchSchedules(): Promise<Ref<Schedule[]>> {
 }
 async function updateSchedules() {
   showLoading()
-  schedules = await fetchSchedules()
+  schedules.value = toValue(await fetchSchedules())
   hideLoading()
 }
 
